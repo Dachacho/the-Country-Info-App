@@ -1,10 +1,13 @@
 import express from "express";
 import dotenv from "dotenv";
+import router from "./routes/countryRoutes.ts";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(router);
 
 app.get("/", (req, res) => {
   res.send("Country Info App backend is running!");
