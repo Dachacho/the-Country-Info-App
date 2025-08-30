@@ -43,31 +43,32 @@ export const getCountryInfo = async (req: Request, res: Response) => {
     }
     countryCodeIso2 = iso2;
   } else {
-    try {
-      const [countryInfoRes, populationRes, flagRes] = await Promise.all([
-        axios.get(
-          `https://date.nager.at/api/v3/CountryInfo/${countryCodeIso2}`
-        ),
-        axios.post("https://countriesnow.space/api/v0.1/countries/population", {
-          iso3: countryCodeIso3,
-        }),
-        axios.post(
-          "https://countriesnow.space/api/v0.1/countries/flag/images",
-          { iso2: countryCodeIso2 }
-        ),
-      ]);
+    return res
+      .status(400)
+      .json({ message: "countryCode should be in iso2 or iso3" });
+  }
 
-      const borders = countryInfoRes.data.borders;
-      const population = populationRes.data.data;
-      const flagUrl = flagRes.data.data.flag;
+  try {
+    const [countryInfoRes, populationRes, flagRes] = await Promise.all([
+      axios.get(`https://date.nager.at/api/v3/CountryInfo/${countryCodeIso2}`),
+      axios.post("https://countriesnow.space/api/v0.1/countries/population", {
+        iso3: countryCodeIso3,
+      }),
+      axios.post("https://countriesnow.space/api/v0.1/countries/flag/images", {
+        iso2: countryCodeIso2,
+      }),
+    ]);
 
-      res.json({
-        borders,
-        population,
-        flagUrl,
-      });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch country info", error });
-    }
+    const borders = countryInfoRes.data.borders;
+    const population = populationRes.data.data;
+    const flagUrl = flagRes.data.data.flag;
+
+    res.json({
+      borders,
+      population,
+      flagUrl,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch country info", error });
   }
 };
