@@ -1,0 +1,16 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+
+# Build output
+dist/
+build/
+
+# OS files
+.DS_Store
+
+# Optional: Uncomment if you want to ignore environment files
+# .env
